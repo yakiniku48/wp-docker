@@ -1,0 +1,71 @@
+# バージョン・ポート・パスはすべて .env で管理
+#
+# WP_SUBDIR の既定値は app。
+#   - 未設定        … app（${WP_SUBDIR-app} により補完）
+#   - 明示的に空     … ルート直下（WP_SUBDIR= と書く）
+
+services:
+  wordpress:
+    build:
+      context: ./docker
+      args:
+        WP_VERSION: ${WP_VERSION:-6.7}
+        PHP_VERSION: ${PHP_VERSION:-8.3}
+        WP_SUBDIR: ${WP_SUBDIR-app}
+    ports:
+      - "${WP_PORT:-8888}:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+      WP_HOME: "http://localhost:${WP_PORT:-8888}"
+      WP_SITEURL: "http://localhost:${WP_PORT:-8888}/${WP_SUBDIR-app}"
+      WP_DEBUG: "1"
+      WP_DEBUG_LOG: "1"
+      WP_DEBUG_DISPLAY: "1"
+      SCRIPT_DEBUG: "1"
+      WP_ENVIRONMENT_TYPE: local
+    volumes:
+      - ./${DIST_PATH}/wp-content/themes:/var/www/html/${WP_SUBDIR-app}/wp-content/themes
+      - ./${DIST_PATH}/wp-content/plugins:/var/www/html/${WP_SUBDIR-app}/wp-content/plugins
+      - wp_uploads:/var/www/html/${WP_SUBDIR-app}/wp-content/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # === phpMyAdmin（docker compose --profile tools up で起動） ===
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "${PMA_PORT:-8080}:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: wordpress
+      PMA_PASSWORD: password
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  db_data:
+  wp_uploads:
