@@ -49,8 +49,6 @@ RUN set -e; \
       CONFIG_DIR="${WEBROOT}"; \
     fi; \
     php /tmp/gen-salts.php "${CONFIG_DIR}/wp-salts.php"; \
-    # uploads を事前作成しておく（named volume 初回作成時に www-data 所有が引き継がれる）\
-    mkdir -p "${CONFIG_DIR}/wp-content/uploads"; \
     rm -rf /tmp/wordpress /tmp/gen-salts.php
 
 RUN chown -R www-data:www-data /var/www/html

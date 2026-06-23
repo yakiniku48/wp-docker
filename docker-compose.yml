@@ -29,7 +29,7 @@ services:
     volumes:
       - ./${DIST_PATH}/wp-content/themes:/var/www/html/${WP_SUBDIR-app}/wp-content/themes
       - ./${DIST_PATH}/wp-content/plugins:/var/www/html/${WP_SUBDIR-app}/wp-content/plugins
-      - wp_uploads:/var/www/html/${WP_SUBDIR-app}/wp-content/uploads
+      - ./${DIST_PATH}/wp-content/uploads:/var/www/html/${WP_SUBDIR-app}/wp-content/uploads
     depends_on:
       mysql:
         condition: service_healthy
