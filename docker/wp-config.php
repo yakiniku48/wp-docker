@@ -18,6 +18,10 @@ define('WP_DEBUG_DISPLAY', (bool)(getenv('WP_DEBUG_DISPLAY') ?: false));
 define('SCRIPT_DEBUG',     (bool)(getenv('SCRIPT_DEBUG')     ?: false));
 define('WP_ENVIRONMENT_TYPE', getenv('WP_ENVIRONMENT_TYPE') ?: 'production');
 
+// === 自動更新を無効化（本番とバージョンを揃えるため） ===
+define('WP_AUTO_UPDATE_CORE', false);
+define('AUTOMATIC_UPDATER_DISABLED', true);
+
 // === 認証キー ===
 // ビルド時に docker/gen-salts.php が wp-salts.php を自動生成する。
 // 何らかの理由で生成されなかった場合に備えてフォールバックを用意する。
