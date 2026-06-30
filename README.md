@@ -49,19 +49,33 @@ WP_VERSION=6.7      # WordPressのバージョン
 PHP_VERSION=8.3     # PHPのバージョン
 WP_PORT=8888        # ブラウザでアクセスするポート
 PMA_PORT=8080       # phpMyAdminのポート
+WP_BASE=            # HOMEを置くサブディレクトリ（空ならルート直下）
 WP_SUBDIR=app       # WPコアを置くサブディレクトリ名（既定: app）
 DIST_PATH=dist/app  # ホスト側のdistディレクトリ
 ```
 
-`WP_SUBDIR` の扱い:
+`WP_BASE` と `WP_SUBDIR` で公開URLが決まる。
 
-| 設定               | 配置先                         |
-| ------------------ | ------------------------------ |
-| `WP_SUBDIR=app`    | `/var/www/html/app/`（既定）   |
-| 行ごと削除（未設定）| `app` に補完される             |
-| `WP_SUBDIR=`（空） | ルート直下 `/var/www/html/`    |
+| `WP_BASE` | `WP_SUBDIR` | HOME（公開ルート） | SITE（WPコア）   |
+| --------- | ----------- | ------------------ | ---------------- |
+| 空（既定）| `app`       | `/`                | `/app`           |
+| `blog`    | `app`       | `/blog`            | `/blog/app`      |
+| 空        | 空          | `/`                | `/`（ルート直下）|
 
-> 空にしてルート直下へ置く場合は、`.env` の `DIST_PATH` も実態に合わせて調整すること。
+`WP_BASE=blog` にすると、コンテナ内は次のようになる。
+ルート直下（`/var/www/html/`）は空くので、`/index.html` などの静的ファイルを別途置ける。
+
+```
+/var/www/html/
+├── index.html          # 任意の静的ページ（自分で配置）
+└── blog/               # HOME = /blog（WP_BASE）
+    ├── index.php       # ローダ（自動生成）
+    ├── .htaccess       # RewriteBase /blog/（自動生成）
+    └── app/            # WPコア本体 = /blog/app（WP_SUBDIR）
+```
+
+> `WP_BASE` を変える場合は、`.env` の `DIST_PATH` も実態に合わせて調整すること
+> （例: `WP_BASE=blog` なら `DIST_PATH=dist/blog/app`）。
 
 ### 4. ビルドして起動する
 
