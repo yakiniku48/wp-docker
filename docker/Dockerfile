@@ -32,9 +32,8 @@ RUN curl -o /tmp/wordpress.tar.gz "https://wordpress.org/wordpress-${WP_VERSION}
 # --- 設定ファイルをWPディレクトリへコピー ---
 COPY wp-config.php /tmp/wordpress/wp-config.php
 COPY .htaccess /tmp/htaccess.tmpl
-COPY gen-salts.php /tmp/gen-salts.php
 
-# --- ディレクトリ配置・ソルト生成・WP-CLI設定 ---
+# --- ディレクトリ配置・WP-CLI設定 ---
 #   WEBROOT/[WP_BASE]/[WP_SUBDIR] の二段構成。
 #     HOME_DIR … 公開ルート（index.php と .htaccess を置く）。WP_BASE が空ならWEBROOT
 #     WP_DIR   … WPコア本体。WP_SUBDIR が空なら HOME_DIR と同じ
@@ -58,7 +57,6 @@ RUN set -e; \
     REL_WP="$BASE"; \
     if [ -n "$SUBDIR" ]; then REL_WP="${REL_WP:+$REL_WP/}${SUBDIR}"; fi; \
     if [ -n "$REL_WP" ]; then printf 'path: %s\n' "$REL_WP" > "${WEBROOT}/wp-cli.yml"; fi; \
-    php /tmp/gen-salts.php "${WP_DIR}/wp-salts.php"; \
-    rm -rf /tmp/wordpress /tmp/gen-salts.php /tmp/htaccess.tmpl
+    rm -rf /tmp/wordpress /tmp/htaccess.tmpl
 
 RUN chown -R www-data:www-data /var/www/html

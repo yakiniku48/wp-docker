@@ -1,7 +1,9 @@
 **/wp-content/plugins/*
 **/wp-content/themes/*
 **/wp-content/uploads/*
+**/wp-content/languages/*
 
 !**/wp-content/plugins/index.php
 !**/wp-content/themes/index.php
 !**/wp-content/uploads/index.php
+!**/wp-content/languages/index.php

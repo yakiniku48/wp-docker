@@ -9,7 +9,6 @@ project/
 ├── docker/
 │   ├── Dockerfile
 │   ├── wp-config.php
-│   ├── gen-salts.php           # ビルド時に認証ソルトを生成
 │   └── .htaccess
 └── dist/
     └── app/
@@ -174,10 +173,11 @@ docker compose up -d --build                # 再ビルドして起動
     ├── wp-admin/
     ├── wp-includes/
     ├── wp-config.php
-    ├── wp-salts.php   # 認証ソルト（ビルド時に自動生成）
     ├── wp-content/
-    │   ├── themes/    ← dist/app/wp-content/themes/ をマウント
-    │   └── plugins/   ← dist/app/wp-content/plugins/ をマウント
+    │   ├── themes/     ← dist/app/wp-content/themes/ をマウント
+    │   ├── plugins/    ← dist/app/wp-content/plugins/ をマウント
+    │   ├── uploads/    ← dist/app/wp-content/uploads/ をマウント
+    │   └── languages/  ← dist/app/wp-content/languages/ をマウント（翻訳ファイル保持）
     └── wp-login.php
 ```
 

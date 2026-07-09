@@ -35,6 +35,8 @@ services:
       - ./${DIST_PATH}/wp-content/themes:/var/www/html/${WP_BASE:+${WP_BASE}/}${WP_SUBDIR-app}/wp-content/themes
       - ./${DIST_PATH}/wp-content/plugins:/var/www/html/${WP_BASE:+${WP_BASE}/}${WP_SUBDIR-app}/wp-content/plugins
       - ./${DIST_PATH}/wp-content/uploads:/var/www/html/${WP_BASE:+${WP_BASE}/}${WP_SUBDIR-app}/wp-content/uploads
+      # languages を永続化しないと、リビルドのたびに翻訳ファイルが消えて英語表示に戻る
+      - ./${DIST_PATH}/wp-content/languages:/var/www/html/${WP_BASE:+${WP_BASE}/}${WP_SUBDIR-app}/wp-content/languages
     depends_on:
       mysql:
         condition: service_healthy

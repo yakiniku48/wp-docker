@@ -23,21 +23,9 @@ define('WP_AUTO_UPDATE_CORE', false);
 define('AUTOMATIC_UPDATER_DISABLED', true);
 
 // === 認証キー ===
-// ビルド時に docker/gen-salts.php が wp-salts.php を自動生成する。
-// 何らかの理由で生成されなかった場合に備えてフォールバックを用意する。
-$wp_salts = __DIR__ . '/wp-salts.php';
-if (is_readable($wp_salts)) {
-    require $wp_salts;
-} else {
-    define('AUTH_KEY',         'put your unique phrase here');
-    define('SECURE_AUTH_KEY',  'put your unique phrase here');
-    define('LOGGED_IN_KEY',    'put your unique phrase here');
-    define('NONCE_KEY',        'put your unique phrase here');
-    define('AUTH_SALT',        'put your unique phrase here');
-    define('SECURE_AUTH_SALT', 'put your unique phrase here');
-    define('LOGGED_IN_SALT',   'put your unique phrase here');
-    define('NONCE_SALT',       'put your unique phrase here');
-}
+// あえて定義しない。未定義の場合、WordPress がランダムなキーを生成して
+// DB に保存する（wp_salt() のフォールバック）。DB はボリュームで永続化
+// されるため、リビルドしてもキーが変わらずログインセッションが維持される。
 
 // === 開発用: 管理画面からの更新時にFTP情報を要求させない ===
 define('FS_METHOD', 'direct');
