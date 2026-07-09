@@ -8,9 +8,11 @@ ARG WP_BASE=
 
 # --- PHP拡張 ---
 RUN apt-get update && apt-get install -y \
-      libpng-dev libjpeg-dev libwebp-dev libzip-dev curl unzip \
+      libpng-dev libjpeg-dev libwebp-dev libzip-dev libicu-dev libmagickwand-dev curl unzip \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
-    && docker-php-ext-install mysqli gd zip exif \
+    && docker-php-ext-install mysqli gd zip exif intl \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && rm -rf /var/lib/apt/lists/*
 
 # --- mod_rewrite 有効化 ---
